@@ -7,8 +7,11 @@ output:
 
 
 ## Loading and preprocessing the data
+AMDdata<-read.csv(file="activity.csv")
 
-
+total steps for each day:
+sumstepsperday<-tapply(AMDdata$steps,AMDdata$date,sum)
+hist(sumstepsperday, main="Total steps per day", col="yellow",breaks = 10)
 
 ## What is mean total number of steps taken per day?
 
