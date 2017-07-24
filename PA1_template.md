@@ -1,31 +1,29 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 
 ## Loading and preprocessing the data
-```{r data loading preprocess, echo = TRUE }
+
+```r
 AMDdata<-read.csv(file="activity.csv")
 ```
 
-```{r histogram, echo=TRUE}
+
+```r
 sumstepsperday<-tapply(AMDdata$steps,AMDdata$date,sum)
 hist(sumstepsperday, main="Total steps per day", col="yellow",breaks = 10)
 ```
 
+![](PA1_template_files/figure-html/histogram-1.png)<!-- -->
+
 ## What is mean total number of steps taken per day?
-```{r mean/median, echo=TRUE}
+
+```r
 meanstepsperday<-mean(sumstepsperday, na.rm=TRUE)
 medianstepsperday<-median(sumstepsperday, na.rm=TRUE)
 ```
-The mean is `r round(meanstepsperday)`, and the median is `r medianstepsperday`
+The mean is 1.0766\times 10^{4}, and the median is 10765
 
 ## What is the average daily activity pattern?
 
