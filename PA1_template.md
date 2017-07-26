@@ -27,7 +27,14 @@ The mean is 10766.19, and the median is 10765
 
 ## What is the average daily activity pattern?
 
+```r
+meanstepsinterval<-tapply(AMDdata$steps,AMDdata$interval,mean, na.rm=TRUE, simplify = TRUE)
+interval<-as.numeric(names(meanstepsinterval))
+meanstep<-as.data.frame(as.matrix(meanstepsinterval))
+plot(interval,meanstep$V1, type="l", xlab="interval, 5min", ylab="Average steps", col="blue")
+```
 
+![](PA1_template_files/figure-html/activity pattern-1.png)<!-- -->
 
 ## Imputing missing values
 
