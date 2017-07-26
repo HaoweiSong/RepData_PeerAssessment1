@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r data loading preprocess, echo = TRUE }
 AMDdata<-read.csv(file="activity.csv")
 ```
-
+## Calculating the total steps for each day
 ```{r histogram, echo=TRUE}
 sumstepsperday<-tapply(AMDdata$steps,AMDdata$date,sum)
 hist(sumstepsperday, main="Total steps per day", col="yellow",breaks = 10)
@@ -30,13 +30,42 @@ The mean is `r format(meanstepsperday,scientific=FALSE)`, and the median is `r m
 ## What is the average daily activity pattern?
 ```{r activity pattern, echo=TRUE}
 meanstepsinterval<-tapply(AMDdata$steps,AMDdata$interval,mean, na.rm=TRUE, simplify = TRUE)
-interval<-as.numeric(names(meanstepsinterval))
-meanstep<-as.data.frame(as.matrix(meanstepsinterval))
-plot(interval,meanstep$V1, type="l", xlab="interval, 5min", ylab="Average steps", col="blue")
+meanstepsinterval<-as.data.frame(as.matrix(meanstepsinterval))
+plot(row.names(meanstepsinterval),meanstepsinterval$V1, type="l", xlab="interval, 5min", ylab="Average steps", col="blue")
+intervalwithmaxsteps<-row.names(meanstepsinterval)[which.max(meanstepsinterval$V1)]
 ```
+Interval `r intervalwithmaxsteps`, on average across all the days in the dataset, contains the maximum number of steps
 
 ## Imputing missing values
+```{r missing values, echo=TRUE}
+narow<-nrow(AMDdata[is.na(AMDdata$steps),])
+```
+There are `r narow` missing values
 
+###Strategy: replace the NA with averge steps for each interval
+```{r Inputing missing values, echo=TRUE}
+cleanAMDdata<-AMDdata
+meanstepsinterval[,"interval"]<-rownames(meanstepsinterval)
+cleanAMDdata<-merge(cleanAMDdata,meanstepsinterval,by="interval")
+cleanAMDdata$steps[is.na(cleanAMDdata$steps)]<-cleanAMDdata$V1[is.na(cleanAMDdata$steps)]
+```
+
+##Calculate the total number steps, mean and median for each day 
+```{r sum, echo=TRUE}
+sumstepsperdaynew<-tapply(cleanAMDdata$steps,cleanAMDdata$date,sum)
+hist(sumstepsperdaynew, main="Total steps per day", col="red",breaks = 10)
+```
+
+## What is mean total number of steps taken per day?
+```{r new mean/median, echo=TRUE}
+meanstepsperdaynew<-mean(sumstepsperdaynew )
+medianstepsperdaynew<-median(sumstepsperdaynew)
+```
+The mean is `r format(meanstepsperdaynew,scientific=FALSE)`, and the median is `r format(medianstepsperdaynew,scientific=FALSE)`
+
+
+##meanstepsperdaynew<-tapply(cleanAMDdata$steps,cleanAMDdata$date,mean)
+##medianstepsperdaynew<-tapply(cleanAMDdata$steps,cleanAMDdata$date,median)
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
