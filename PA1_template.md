@@ -23,7 +23,7 @@ hist(sumstepsperday, main="Total steps per day", col="yellow",breaks = 10)
 meanstepsperday<-mean(sumstepsperday, na.rm=TRUE)
 medianstepsperday<-median(sumstepsperday, na.rm=TRUE)
 ```
-The mean is 1.0766\times 10^{4}, and the median is 10765
+The mean is 10766.19, and the median is 10765
 
 ## What is the average daily activity pattern?
 

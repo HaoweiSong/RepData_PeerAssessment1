@@ -25,10 +25,13 @@ hist(sumstepsperday, main="Total steps per day", col="yellow",breaks = 10)
 meanstepsperday<-mean(sumstepsperday, na.rm=TRUE)
 medianstepsperday<-median(sumstepsperday, na.rm=TRUE)
 ```
-The mean is `r round(meanstepsperday)`, and the median is `r medianstepsperday`
+The mean is `r format(meanstepsperday,scientific=FALSE)`, and the median is `r medianstepsperday`
 
 ## What is the average daily activity pattern?
-
+meanstepsinterval<-tapply(AMDdata$steps,AMDdata$interval,mean, na.rm=TRUE, simplify = TRUE)
+interval<-as.numeric(names(meanstepsinterval))
+meanstep<-as.data.frame(as.matrix(meanstepsinterval))
+plot(interval,meanstep$V1, type="l", xlab="interval, 5min", ylab="Average steps", col="blue")
 
 
 ## Imputing missing values
