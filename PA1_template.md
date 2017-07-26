@@ -47,13 +47,14 @@ narow<-nrow(AMDdata[is.na(AMDdata$steps),])
 ```
 There are 2304 missing values
 
-#Strategy: replace the NA with averge steps for each interval
+###Strategy: replace the NA with averge steps for each interval
 
 ```r
 cleanAMDdata<-AMDdata
 meanstepsinterval[,"interval"]<-rownames(meanstepsinterval)
 cleanAMDdata<-merge(cleanAMDdata,meanstepsinterval,by="interval")
 cleanAMDdata$steps[is.na(cleanAMDdata$steps)]<-cleanAMDdata$V1[is.na(cleanAMDdata$steps)]
+cleanAMDdata$V1=NULL
 ```
 
 ##Calculate the total number steps, mean and median for each day 
@@ -68,17 +69,32 @@ hist(sumstepsperdaynew, main="Total steps per day", col="red",breaks = 10)
 ## What is mean total number of steps taken per day?
 
 ```r
-meanstepsperdaynew<-mean(sumstepsperdaynew, na.rm=TRUE)
-medianstepsperdaynew<-median(sumstepsperdaynew, na.rm=TRUE)
+meanstepsperdaynew<-mean(sumstepsperdaynew )
+medianstepsperdaynew<-median(sumstepsperdaynew)
 ```
 The mean is 10766.19, and the median is 10766.19
 
 
-##meanstepsperdaynew<-tapply(cleanAMDdata$steps,cleanAMDdata$date,mean)
-##medianstepsperdaynew<-tapply(cleanAMDdata$steps,cleanAMDdata$date,median)
-
-
 ## Are there differences in activity patterns between weekdays and weekends?
 
+```r
+cleanAMDdata$Day <- weekdays(as.Date(as.character(cleanAMDdata$date)))
+cleanAMDdata$Day[cleanAMDdata$Day=="Sunday"|cleanAMDdata$Day=="Saturday"]="weekend"
+cleanAMDdata$Day[!(cleanAMDdata$Day=="weekend")]="weekday"
+cleanAMDdata$Day <- as.factor(c("Weekend","Weekday"))
+meanstepsnew<-with(cleanAMDdata, tapply(steps,list(interval, Day), mean, simplify = TRUE))
+meanstepsnew<-as.data.frame(as.matrix(meanstepsnew))
+```
 
-## need to be commited at least once
+
+```r
+plot(row.names(meanstepsnew), meanstepsnew$Weekday, type = "l", col = "green", main = "Weekdays", ylab="Average steps", xlab="Interval")
+```
+
+![](PA1_template_files/figure-html/plotting-1.png)<!-- -->
+
+```r
+plot(row.names(meanstepsnew), meanstepsnew$Weekend, type = "l", col = "orange", main = "Weekends", ylab="Average steps", xlab="Interval")
+```
+
+![](PA1_template_files/figure-html/plotting-2.png)<!-- -->

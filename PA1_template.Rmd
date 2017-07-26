@@ -48,6 +48,7 @@ cleanAMDdata<-AMDdata
 meanstepsinterval[,"interval"]<-rownames(meanstepsinterval)
 cleanAMDdata<-merge(cleanAMDdata,meanstepsinterval,by="interval")
 cleanAMDdata$steps[is.na(cleanAMDdata$steps)]<-cleanAMDdata$V1[is.na(cleanAMDdata$steps)]
+cleanAMDdata$V1=NULL
 ```
 
 ##Calculate the total number steps, mean and median for each day 
@@ -64,11 +65,17 @@ medianstepsperdaynew<-median(sumstepsperdaynew)
 The mean is `r format(meanstepsperdaynew,scientific=FALSE)`, and the median is `r format(medianstepsperdaynew,scientific=FALSE)`
 
 
-##meanstepsperdaynew<-tapply(cleanAMDdata$steps,cleanAMDdata$date,mean)
-##medianstepsperdaynew<-tapply(cleanAMDdata$steps,cleanAMDdata$date,median)
-
-
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r weekdays or weekends, echo=TRUE}
+cleanAMDdata$Day <- weekdays(as.Date(as.character(cleanAMDdata$date)))
+cleanAMDdata$Day[cleanAMDdata$Day=="Sunday"|cleanAMDdata$Day=="Saturday"]="weekend"
+cleanAMDdata$Day[!(cleanAMDdata$Day=="weekend")]="weekday"
+cleanAMDdata$Day <- as.factor(c("Weekend","Weekday"))
+meanstepsnew<-with(cleanAMDdata, tapply(steps,list(interval, Day), mean, simplify = TRUE))
+meanstepsnew<-as.data.frame(as.matrix(meanstepsnew))
+```
 
-
-## need to be commited at least once
+```{r plotting, echo=TRUE}
+plot(row.names(meanstepsnew), meanstepsnew$Weekday, type = "l", col = "green", main = "Weekdays", ylab="Average steps", xlab="Interval")
+plot(row.names(meanstepsnew), meanstepsnew$Weekend, type = "l", col = "orange", main = "Weekends", ylab="Average steps", xlab="Interval")
+```
